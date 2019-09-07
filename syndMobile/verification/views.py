@@ -1,5 +1,5 @@
 import uuid
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 import imaplib
@@ -32,6 +32,7 @@ import email
     # email_message = email.message_from_string(raw_email_string)
     #
     # print(email_message)
+from django.views.decorators.csrf import csrf_exempt
 
 ORG_EMAIL = "@gmail.com"
 FROM_EMAIL = "syndsms" + ORG_EMAIL
@@ -90,9 +91,15 @@ def read_email_from_gmail(request):
 
     return HttpResponse("<h2>verification</h2>")
 
-
+@csrf_exempt
 def create_uudi_hash(request):
-    id  = uuid.uuid4()
-    print(id)
+    id = None
+    if(request.method == "POST"):
+        id = uuid.uuid4() if request.POST.get("uuid") == "?" else None
 
-    return HttpResponse("<h2>UUID4</h2>")
+        print(id)
+    json = {
+        'uuid': id
+    }
+
+    return JsonResponse(json)
