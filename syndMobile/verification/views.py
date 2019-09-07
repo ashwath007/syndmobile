@@ -1,4 +1,6 @@
 import uuid
+import time
+
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -50,8 +52,12 @@ SMTP_PORT = 993
 # #
 # # ------------------------------------------------
 
+@csrf_exempt
 def read_email_from_gmail(request):
     # try:
+
+    print("hi")
+    time.sleep(20)
     mail = imaplib.IMAP4_SSL(SMTP_SERVER, SMTP_PORT)
     mail.login(FROM_EMAIL, FROM_PWD)
     mail.select('inbox')
@@ -78,7 +84,8 @@ def read_email_from_gmail(request):
             body_string = body.decode('utf-8')
             body_code = body_string.split(".")
             body_sender = body_code[0].split("+")
-            body_sender = body_sender[1].split(" ")
+            body_sender = body_sender[1].split(" ") if len(body_code) >= 1 else None
+            phone_no = body_sender[0] if body_sender is not None else None
             print(body)
             print(body_code)
             print(body_code[2])
@@ -86,10 +93,14 @@ def read_email_from_gmail(request):
             print('\n')
 
 
+    json = {
+        'uuid': body_code[2] if len(body_code) > 1 else None,
+        'phone': phone_no
+    }
     # except (Exception,e):
     #     print(Exception.message)
 
-    return HttpResponse("<h2>verification</h2>")
+    return JsonResponse(json)
 
 @csrf_exempt
 def create_uudi_hash(request):
