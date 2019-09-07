@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from verification.models import RegisteredNo
+
+admin.site.register(RegisteredNo)

@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+class RegisteredNo(models.Model):
+    id = models.CharField(max_length=32, primary_key=True)
+    phone = models.CharField(max_length=10)
+    name = models.CharField(max_length=30, blank=True)
