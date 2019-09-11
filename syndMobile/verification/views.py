@@ -27,7 +27,9 @@ SMTP_PORT = 993
 @csrf_exempt
 def read_email_from_gmail(request):
    json = {}
-
+   body_code = []
+   phone_no = None
+   state = None
 
    if(request.method=="POST" and request.POST.get("state")=="?"):
         # time.sleep(5)
@@ -132,7 +134,8 @@ def create_uudi_hash(request):
 
 
     json = {
-        'uuid': id
+        'uuid': id,
+        'img': "https://surlybikes.com/uploads/bikes/_medium_image/Lowside_BK0887-2000x1333.jpg"
     }
 
     return JsonResponse(json)
