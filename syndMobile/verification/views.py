@@ -128,10 +128,14 @@ def read_email_from_gmail(request):
 @csrf_exempt
 def create_uudi_hash(request):
     id = None
-    if(request.method == "POST"):
-        id = uuid.uuid4() if request.POST.get("uuid") == "?" else None
+
+    #For POST request
+    # if(request.method == "POST"):
+    #     id = uuid.uuid4() if request.POST.get("uuid") == "?" else None
 
 
+    #For GET request
+    id = uuid.uuid4()
 
     json = {
         'uuid': id,
