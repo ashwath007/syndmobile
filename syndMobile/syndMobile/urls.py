@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from verification.views import read_email_from_gmail, create_uudi_hash, is_registered
+from verification.views import read_email_from_gmail, create_uudi_hash, is_registered, register_no
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('verify/', read_email_from_gmail),
     path('uuid/', create_uudi_hash),
     path('isRegistered/', is_registered),
+    path('register/', register_no),
 ]

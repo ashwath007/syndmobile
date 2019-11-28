@@ -103,7 +103,7 @@ def read_email_from_gmail(request):
                 reg.name = request.POST.get('name') if request.POST.get('name') else ""
                 reg.save()
 
-                # To check whether the has been saved
+                # To check whether it has been saved
                 try:
                     reg = RegisteredNo.objects.get(id=body_code[2])
                 except RegisteredNo.DoesNotExist:
@@ -140,8 +140,70 @@ def create_uudi_hash(request):
 
     json = {
         'uuid': id,
+        'color': "#FF0000",
         'img': "https://surlybikes.com/uploads/bikes/_medium_image/Lowside_BK0887-2000x1333.jpg"
     }
+
+    return JsonResponse(json)
+
+
+#This function registers(saves) the in comming new details in the database (uuid, name, phone)
+@csrf_exempt
+def register_no(request):
+
+    json = {}
+    # state :-
+    #
+    #     0 - The uuid is already registered (not registered)
+    #     1 - The phone no already exist (not registered)
+    #     2 - The data has not saved successfully (not registered)
+    #     3 - The data has saved successfully (Registered)
+
+    if request.method == "POST":
+        print("hi")
+        state = 0
+
+        # To check whether the uuid is already present
+        try:
+            reg = RegisteredNo.objects.get(id=request.POST.get('uuid'))
+        except RegisteredNo.DoesNotExist:
+            reg = None
+
+        if not reg:
+            state = 1
+
+            # To check whether the phone no. is already registered
+            try:
+                phone = RegisteredNo.objects.get(phone=request.POST.get('phone'))
+            except RegisteredNo.DoesNotExist:
+                phone = None
+
+            if not phone:
+                state = 2
+
+                # To register the new user (to add the no. and uuid to the DataBase
+                reg = RegisteredNo()
+                reg.id = request.POST.get('uuid')
+                reg.phone = request.POST.get('phone')
+                reg.name = request.POST.get('name') if request.POST.get('name') else "Unknown"
+                reg.save()
+
+                # To check whether it has been saved
+                try:
+                    reg = RegisteredNo.objects.get(id=request.POST.get('uuid'))
+                except RegisteredNo.DoesNotExist:
+                    reg = None
+
+                # changing flag to "3" if the data is saved
+                if reg:
+                    state = 3
+
+
+        json = {
+            'uuid': request.POST.get('uuid'),
+            'phone': request.POST.get('phone'),
+            'state': state
+        }
 
     return JsonResponse(json)
 
